@@ -15,7 +15,7 @@
 #define S_ISREG(m) (((m) & S_IFMT) == S_IFREG)
 #endif
 
-#ifndef logf 
+#if !defined(__MINGW32__) && !defined(logf)
 #define logf(x)     ((float)log((double)(x)))
 #endif
 
