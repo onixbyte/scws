@@ -9,6 +9,9 @@ on:
     types: [published]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build-windows:
     name: Build on Windows (MSYS2/MinGW64)
@@ -55,9 +58,19 @@ jobs:
       - name: Collect binaries
         run: |
           mkdir -p artifacts
-          cp dist/bin/scws.exe      artifacts/ 2>/dev/null || cp dist/bin/scws      artifacts/ 2>/dev/null || true
-          cp dist/bin/scws-gen-dict.exe artifacts/ 2>/dev/null || cp dist/bin/scws-gen-dict artifacts/ 2>/dev/null || true
-          find dist/lib -name "*.a" -exec cp {} artifacts/ \; 2>/dev/null || true
+          # Copy executables (MinGW may produce .exe or no extension)
+          for name in scws scws-gen-dict; do
+            if [ -f "dist/bin/${name}.exe" ]; then
+              cp "dist/bin/${name}.exe" artifacts/
+            elif [ -f "dist/bin/${name}" ]; then
+              cp "dist/bin/${name}" artifacts/
+            else
+              echo "ERROR: binary ${name} not found in dist/bin/" >&2
+              exit 1
+            fi
+          done
+          # Copy static libraries
+          find dist/lib -name "*.a" -exec cp {} artifacts/ \;
           ls -lh artifacts/
 
       - name: Upload Windows binaries
