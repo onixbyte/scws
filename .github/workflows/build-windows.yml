@@ -1,0 +1,68 @@
+name: Build Windows Binaries
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    name: Build on Windows (MSYS2/MinGW64)
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            base-devel
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-libtool
+            autoconf
+            automake
+            libtool
+            make
+
+      - name: Generate build system
+        run: |
+          autoreconf -fiv
+
+      - name: Configure
+        run: |
+          ./configure --prefix="$PWD/dist" --disable-shared --enable-static
+
+      - name: Build
+        run: |
+          make -j$(nproc)
+
+      - name: Install to dist directory
+        run: |
+          make install
+
+      - name: Collect binaries
+        run: |
+          mkdir -p artifacts
+          cp dist/bin/scws.exe      artifacts/ 2>/dev/null || cp dist/bin/scws      artifacts/ 2>/dev/null || true
+          cp dist/bin/scws-gen-dict.exe artifacts/ 2>/dev/null || cp dist/bin/scws-gen-dict artifacts/ 2>/dev/null || true
+          find dist/lib -name "*.a" -exec cp {} artifacts/ \; 2>/dev/null || true
+          ls -lh artifacts/
+
+      - name: Upload Windows binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: scws-windows-x64
+          path: artifacts/
+          if-no-files-found: error
