@@ -8,19 +8,11 @@ sysconf_DATA = rules.ini rules.utf8.ini rules_cht.utf8.ini
 # dictionary
 dict_FILES = dict.xdb dict.utf8.xdb
 
-dict.txt:
-	@echo "Generate dict.txt by php ..."
-	php ../dev/dict/calc_text.php > $@
-
-dict.utf8.txt: dict.txt
-	@echo "Convert gbk text dict to utf8 ..."
-	@php -r 'echo mb_convert_encoding(file_get_contents("dict.txt"), "utf-8", "gbk");' > $@
-	
 dict.xdb: dict.txt
 	-rm -f $@
 	../cli/scws-gen-dict -c gbk -i $< -o $@
 
-dict.utf8.xdb: dict.utf8.txt
+dict.utf8.xdb: dict.txt
 	-rm -f $@
 	../cli/scws-gen-dict -c utf8 -i $< -o $@
 

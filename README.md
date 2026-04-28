@@ -1,7 +1,3 @@
-README of SCWS
-===============
-$Id$
-
 SCWS 简介
 ---------
 
@@ -11,8 +7,7 @@ SCWS 简介
 是中文分词的攻关难点。
 
 SCWS 采用纯 C 语言开发，不依赖任何外部库函数，可直接使用动态链接库嵌入应用程序，支持的
-中文编码包括 `GBK`、`UTF-8` 等。此外还提供了 [PHP][2] 扩展模块，可在 PHP 中快速
-而方便地使用分词功能。
+中文编码包括 `GBK`、`UTF-8` 等。
 
 分词算法上并无太多创新成分，采用的是自己采集的词频词典，并辅以一定的专有名称，人名，地名，
 数字年代等规则识别来达到基本分词，经小范围测试准确率在 90% ~ 95% 之间，基本上能满足一些
@@ -20,13 +15,6 @@ SCWS 采用纯 C 语言开发，不依赖任何外部库函数，可直接使用
 
 SCWS 由 [hightman][8] 开发，并以 BSD 许可协议开源发布 ，参见 [COPYING][7]。
 
-
-PHP 分词演示
-------------
-
-* _GBK_ <http://www.xunsearch.com/scws/demo/v4.php>
-* _UTF-8_ <http://www.xunsearch.com/scws/demo/v48.php>
-* _繁体中文_ <http://www.xunsearch.com/scws/demo/v48.cht.php>
 
 
 安装
@@ -46,45 +34,6 @@ PHP 分词演示
    ```
    > 注意：这是以默认方式安装到 `/usr/local` 目录。详细配置参数执行 `./configure --help` 查看。
 
-
-PHP 扩展
----------
-
-在 UNIX 类的系统上，请直接从源码方式编译安装 PHP 扩展；对于 windows 系统，请直接下载我们编译好的
-`php_scws.dll` 即可。
-
-假定您已经将 scws 安装到 `$prefix` 目录，还要求系统环境装有 autoconf automake 及 phpize 工具。
-
-1. 进入源码目录的 phpext/ 并执行 `phpize` (位于 php 安装目录下的 bin 目录里)
-
-2. 执行 `configure` 进行配置和基础检测，假定您的 php 安装在 `$php_prefix` 目录
-   ```
-   ./configure --with-scws=/usr/local --with-php-config=$php_prefix/bin/php-config
-   ```
-
-3. 先编译然后以 `root` 身份安装
-   ```
-   make
-   sudo make install
-   ```
-
-4. 在 php.ini 中加入以下内容
-   ```
-   [scws]
-   ; 注意请检查 php.ini 中的 extension_dir 的设定值是否正确, 否则请将 extension_dir 设为空，
-   ; 再把 extension = scws.so 或 php_scws.dll 指定绝对路径。
-   extension = scws.so
-   scws.default.charset = gbk
-   scws.default.fpath = $prefix/etc
-   ```
-
-5. 命令行下执行 `php -m` 就能看到 scws 了，phpinfo() 也会包含关于 scws 的信息。
-
-6. windows 下的 php 扩展是采用 dll 库文件。我们已预编译若干个版本，采用 zip 压缩位于
-   `phpext/win32/php_scws-1.2.1-win32.zip`，请直接解压后选择相应版本的 `php_scws.dll`。
-   将它复制到 PHP 的扩展目录中（通常是 extensions 或 ext 目录），然后参考上面的方式修改 `php.ini`。
-
-7. 关于 PHP 扩展的示例用法及开发参考，请参见 [phpext/README.md][6]。
 
 
 配套工具用法
@@ -159,7 +108,7 @@ rules.ini 规则集
 ---------
 
 在 FreeBSD 6.2 系统，单核单 CPU 至强 3.0G 的服务器上，测试长度为 80,535 的文本。
-用附带的命令行工具耗时将约 0.17 秒，若改用 php 扩展方式调用，则耗时约为 0.65 秒。
+用附带的命令行工具耗时将约 0.17 秒。
 
 分词精度 95.60%，召回率 90.51% (F-1: 0.93)
 
@@ -173,11 +122,9 @@ rules.ini 规则集
 
 
 [1]: http://www.xunsearch.com/scws
-[2]: http://www.php.net
 [3]: http://www.cygwin.com
 [4]: http://www.mingw.org
 [5]: https://github.com/hightman/scws/blob/master/API.md
-[6]: https://github.com/hightman/scws/blob/master/phpext/README.md
 [7]: https://github.com/hightman/scws/blob/master/COPYING
 [8]: http://www.hightman.cn
 

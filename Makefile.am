@@ -7,7 +7,7 @@ SUBDIRS = . libscws cli etc
 
 DIST_SUBDIRS = libscws cli etc
 
-EXTRA_DIST = API.md phpext win32
+EXTRA_DIST = API.md win32
 
 UNISON_OPT = -auto -batch -prefer newer -terse -times -logfile /dev/null
 	
@@ -16,16 +16,4 @@ dict:
 
 dist-dict:
 	cd etc && make dist-dict
-
-dist-hook:
-#	-rm -f $(distdir)/libscws/version.h
-
-sync-web:
-	#unison ./web ssh://xunsearch/web/scws $(UNISON_OPT)
-	rsync -avzp --delete ./web/* d10:/data/dockers/php-runner/www/xunsearch/web/scws
-
-dist-web: dist-bzip2
-	mv -f $(distdir).tar.bz2 web/down
-	cd etc && tar czf ../web/down/rules.tgz *.ini
-	make sync-web
 
