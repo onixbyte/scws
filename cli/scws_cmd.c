@@ -102,10 +102,12 @@ int main(int argc, char *argv[])
 	fin = fout = (FILE *) NULL;
 	str = attr = NULL;
 	bytes = xmode = fsize = tlimit = 0;
-	if ((program_name = strrchr(argv[0], '/')) != NULL)
-		program_name++;
-	else
-		program_name = argv[0];	
+	{
+		char *_s = strrchr(argv[0], '/');
+		char *_b = strrchr(argv[0], '\\');
+		char *_sep = _s > _b ? _s : _b;
+		program_name = _sep ? _sep + 1 : argv[0];
+	}
 
 	/* try to log the time */
 	gettimeofday(&t1, NULL);

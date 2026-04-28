@@ -61,7 +61,8 @@ $(BUILD_DIR)/%.o: cli/%.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	@rm -rf $(BUILD_DIR) $(DIST_DIR)
+	@rm -rf $(BUILD_DIR)
+	@rm -f $(SCWS_EXE) $(GEN_DICT_EXE)
 	@echo Cleaned.
 
 help:
