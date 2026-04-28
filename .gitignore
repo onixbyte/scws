@@ -97,6 +97,7 @@ fabric.properties
 # Editor-based HTTP Client
 http-client.private.env.json
 
+build/
 dist/
 
 # Package files
@@ -132,6 +133,4 @@ ltmain.sh
 cli/scws
 cli/scws-gen-dict
 libscws/version.h
-web/demo/a.php
-web/demo/autocat/
 
