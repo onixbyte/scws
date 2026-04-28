@@ -4,6 +4,17 @@
 #include <windows.h>
 #include <io.h>
 
+/* Configuration for Windows - undefine features not available */
+#ifdef HAVE_MMAP
+#undef HAVE_MMAP
+#endif
+#ifdef HAVE_FLOCK
+#undef HAVE_FLOCK
+#endif
+#ifdef HAVE_STRUCT_FLOCK
+#undef HAVE_STRUCT_FLOCK
+#endif
+
 #ifndef inline
 #	define inline   __inline
 #endif
@@ -16,7 +27,10 @@
 #endif
 
 #ifndef logf 
+/* MinGW provides logf function, so we don't need to redefine it */
+#if !defined(__MINGW32__) && !defined(__MINGW64__)
 #define logf(x)     ((float)log((double)(x)))
+#endif
 #endif
 
 #endif

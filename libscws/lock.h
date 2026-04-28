@@ -27,12 +27,11 @@
 */
 int _xdb_flock(int fd, int operation);
 
-#ifndef HAVE_FLOCK
-#	define LOCK_SH 1
-#	define LOCK_EX 2
-#	define LOCK_NB 4
-#	define LOCK_UN 8
-#endif
+/* Define lock constants */
+#define LOCK_SH 1
+#define LOCK_EX 2
+#define LOCK_NB 4
+#define LOCK_UN 8
 
 #ifdef WIN32
 #   define EWOULDBLOCK WSAEWOULDBLOCK

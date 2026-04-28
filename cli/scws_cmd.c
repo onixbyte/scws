@@ -128,7 +128,12 @@ int main(int argc, char *argv[])
 			case 'o' :
 				if (fout != NULL)
 					break;
+#ifdef WIN32
+				/* On Windows, just check if file doesn't exist */
+				if (!stat(optarg, &st))
+#else
 				if (!stat(optarg, &st) || !lstat(optarg, &st))
+#endif
 				{
 					fprintf(stderr, "ERROR: output file exists. '%s'\n", optarg);
 					goto cws_end;

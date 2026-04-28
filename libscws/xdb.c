@@ -5,6 +5,13 @@
  * $Id$
  */
 
+/* Ensure HAVE_MMAP is not defined on Windows */
+#ifdef WIN32
+#ifdef HAVE_MMAP
+#undef HAVE_MMAP
+#endif
+#endif
+
 #ifdef HAVE_CONFIG_H
 #	include "config.h"
 #endif

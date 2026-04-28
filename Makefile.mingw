@@ -1,0 +1,73 @@
+# Makefile for compiling SCWS CLI with MinGW
+# Usage: make -f Makefile.mingw
+
+CC = gcc
+CFLAGS = -Wall -O2 -I. -I./libscws -DHAVE_CONFIG_H -DWIN32 -UHAVE_MMAP
+LDFLAGS = -L./libscws -lscws
+
+# Output directories
+DIST_DIR = ./dist
+BUILD_DIR = ./build
+
+# Source files
+LIBSCWS_SOURCES = libscws/charset.c libscws/crc32.c libscws/pool.c libscws/scws.c \
+                  libscws/xdict.c libscws/darray.c libscws/rule.c libscws/lock.c \
+                  libscws/xdb.c libscws/xtree.c
+CLI_SOURCES = cli/scws_cmd.c cli/gen_dict.c
+
+# Object files
+LIBSCWS_OBJECTS = $(addprefix $(BUILD_DIR)/,$(notdir $(LIBSCWS_SOURCES:.c=.o)))
+SCWS_OBJECTS = $(BUILD_DIR)/scws_cmd.o
+GEN_DICT_OBJECTS = $(BUILD_DIR)/gen_dict.o
+
+# Libraries
+LIBSCWS = $(BUILD_DIR)/libscws.a
+
+# Executables
+SCWS_EXE = $(DIST_DIR)/scws.exe
+GEN_DICT_EXE = $(DIST_DIR)/scws-gen-dict.exe
+
+# Targets
+.PHONY: all clean dist
+
+all: $(DIST_DIR) $(SCWS_EXE) $(GEN_DICT_EXE)
+
+$(DIST_DIR):
+	@if [ ! -d $(DIST_DIR) ]; then mkdir -p $(DIST_DIR); fi
+
+$(BUILD_DIR):
+	@if [ ! -d $(BUILD_DIR) ]; then mkdir -p $(BUILD_DIR); fi
+
+$(LIBSCWS): $(BUILD_DIR) $(LIBSCWS_OBJECTS)
+	@echo Linking library: $@
+	@ar rcs $@ $(LIBSCWS_OBJECTS)
+
+$(SCWS_EXE): $(LIBSCWS) $(SCWS_OBJECTS)
+	@echo Linking executable: $@
+	@$(CC) $(SCWS_OBJECTS) -o $@ $(LIBSCWS)
+	@echo Build completed: $@
+
+$(GEN_DICT_EXE): $(LIBSCWS) $(GEN_DICT_OBJECTS)
+	@echo Linking executable: $@
+	@$(CC) $(GEN_DICT_OBJECTS) -o $@ $(LIBSCWS)
+	@echo Build completed: $@
+
+$(BUILD_DIR)/%.o: libscws/%.c
+	@echo Compiling: $<
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/%.o: cli/%.c
+	@echo Compiling: $<
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	@rm -rf $(BUILD_DIR) $(DIST_DIR)
+	@echo Cleaned.
+
+help:
+	@echo SCWS MinGW Compiler
+	@echo.
+	@echo Usage:
+	@echo   make -f Makefile.mingw         Build all executables
+	@echo   make -f Makefile.mingw clean   Clean build files
+	@echo   make -f Makefile.mingw help    Show this help message

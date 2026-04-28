@@ -97,6 +97,8 @@ fabric.properties
 # Editor-based HTTP Client
 http-client.private.env.json
 
+dist/
+
 # Package files
 *.tar.bz2
 *.zip
